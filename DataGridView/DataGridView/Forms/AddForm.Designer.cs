@@ -35,7 +35,6 @@
             MinCount = new NumericUpDown();
             txtPrice = new TextBox();
             txtAllPrice = new TextBox();
-            button1 = new Button();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -43,6 +42,8 @@
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
+            button1 = new Button();
+            btnCancel = new Button();
             ((System.ComponentModel.ISupportInitialize)Amount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MinCount).BeginInit();
             SuspendLayout();
@@ -97,17 +98,6 @@
             txtAllPrice.Name = "txtAllPrice";
             txtAllPrice.Size = new Size(125, 27);
             txtAllPrice.TabIndex = 6;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.Lime;
-            button1.Location = new Point(352, 409);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 7;
-            button1.Text = "Сохранить";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click_1;
             // 
             // label1
             // 
@@ -179,6 +169,26 @@
             label7.TabIndex = 14;
             label7.Text = "Общая сумма товаров";
             // 
+            // button1
+            // 
+            button1.Location = new Point(330, 390);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 15;
+            button1.Text = "добавить";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // btnCancel
+            // 
+            btnCancel.Location = new Point(457, 390);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(94, 29);
+            btnCancel.TabIndex = 16;
+            btnCancel.Text = "Отменить";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
+            // 
             // AddForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -186,6 +196,8 @@
             BackColor = Color.FromArgb(255, 224, 192);
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnCancel);
+            Controls.Add(button1);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -193,7 +205,6 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(button1);
             Controls.Add(txtAllPrice);
             Controls.Add(txtPrice);
             Controls.Add(MinCount);
@@ -219,7 +230,6 @@
         private NumericUpDown MinCount;
         private TextBox txtPrice;
         private TextBox txtAllPrice;
-        private Button button1;
         private Label label1;
         private Label label2;
         private Label label3;
@@ -227,5 +237,7 @@
         private Label label5;
         private Label label6;
         private Label label7;
+        private Button button1;
+        private Button btnCancel;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DataGridView
+﻿
+
+namespace DataGridView
 {
     partial class MainForm
     {
@@ -37,8 +39,8 @@
             PriceColumn = new DataGridViewTextBoxColumn();
             AllPriceColumn = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
-            label1 = new Label();
             btnAdd = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -113,16 +115,6 @@
             panel1.Size = new Size(971, 125);
             panel1.TabIndex = 1;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Comic Sans MS", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label1.Location = new Point(336, 40);
-            label1.Name = "label1";
-            label1.Size = new Size(272, 39);
-            label1.TabIndex = 0;
-            label1.Text = "Просмотр товаров";
-            // 
             // btnAdd
             // 
             btnAdd.Location = new Point(662, 50);
@@ -133,6 +125,16 @@
             btnAdd.UseVisualStyleBackColor = true;
             btnAdd.Click += btnAdd_Click_1;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Comic Sans MS", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            label1.Location = new Point(336, 40);
+            label1.Name = "label1";
+            label1.Size = new Size(272, 39);
+            label1.TabIndex = 0;
+            label1.Text = "Просмотр товаров";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -142,7 +144,6 @@
             Controls.Add(dataGridView1);
             Name = "MainForm";
             Text = "MainForm";
-           // Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();

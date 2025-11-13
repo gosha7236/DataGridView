@@ -4,15 +4,21 @@ using System.Drawing;
 
 namespace DataGridView
 {
+    /// <summary>
+    /// класс основной формы
+    /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// конструктор класса
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
             RefreshTable();
             dataGridView1.CellDoubleClick += dgvItems_CellDoubleClick;
         }
-
+        ///метод для обновления таблицы
         public void RefreshTable()
         {
             dataGridView1.Rows.Clear();
@@ -35,7 +41,7 @@ namespace DataGridView
             if (e.RowIndex >= 0)
             {
                 var item = Storage.Items[e.RowIndex];
-                AddForm edit = new AddForm(item);
+                AddForm edit = new AddForm();
                 edit.ShowDialog();
                 RefreshTable();
             }

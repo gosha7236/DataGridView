@@ -2,14 +2,46 @@
 
 namespace DataGridView.Forms
 {
+    /// <summary>
+    /// форма для добавления товара
+    /// </summary>
     public partial class AddForm : Form
     {
-        private Item editingItem = null;
-
-        public AddForm(Item? item = null)
+        private Item _item;
+        private int _editIndex = -1;
+       /// <summary>
+       /// конструктор для формы
+       /// </summary>
+        public AddForm()
         {
             InitializeComponent();
-            editingItem = item;
+            this.Text = "Добавить товар";
+        }
+        /// <summary>
+        /// конструктор формы с параметрами
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="index"></param>
+        public AddForm(Item item, int index)
+        {
+            InitializeComponent();
+            _item = item;
+            _editIndex = index;
+            this.Text = "Редактировать товар";
+            FillForm();
+        }
+
+        private void FillForm()
+        {
+            if (_item != null)
+            {
+                txtName.Text = _item.Name;
+                txtSize.Text = _item.Size;
+                cmbMaterial.Text = _item.Material;
+                Amount.Value = _item.Quantity;
+                MinCount.Value = _item.MinLimit;
+                txtPrice.Text = _item.Price.ToString();
+            }
         }
 
         private void AddForm_Load(object sender, EventArgs e)
@@ -21,22 +53,6 @@ namespace DataGridView.Forms
             // Размеры
             txtSize.Items.AddRange(new string[]
             { "20 мм", "30 мм", "40 мм", "50 мм" });
-
-            if (editingItem != null) LoadItemData();
-
-            Amount.ValueChanged += UpdateTotal;
-            txtPrice.TextChanged += UpdateTotal;
-        }
-
-        private void LoadItemData()
-        {
-            txtName.Text = editingItem.Name;
-            txtSize.Text = editingItem.Size;
-            cmbMaterial.Text = editingItem.Material;
-            Amount.Value = editingItem.Quantity;
-            MinCount.Value = editingItem.MinLimit;
-            txtPrice.Text = editingItem.Price.ToString();
-            txtAllPrice.Text = editingItem.Total.ToString();
         }
 
         private void UpdateTotal(object? sender, EventArgs e)
@@ -45,39 +61,68 @@ namespace DataGridView.Forms
                 txtAllPrice.Text = (price * Amount.Value).ToString();
         }
 
-       private void button1_Click_1(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            if (!decimal.TryParse(txtPrice.Text, out decimal price))
+            if (ValidateForm())
             {
-                MessageBox.Show("Неверный формат цены!");
-                return;
-            }
+                var quantity = (int)Amount.Value;
+                var price = int.Parse(txtPrice.Text);
+                var total = quantity * (int)price;
 
-            if (editingItem == null)
-            {
-                // Создание нового товара
-                Item item = new Item()
+                var newItem = new Item(
+                    txtName.Text.Trim(),
+                    txtSize.Text.Trim(),
+                    cmbMaterial.Text.Trim(),
+                    quantity,
+                    (int)MinCount.Value,
+                    price,
+                    total
+                );
+
+                if (_editIndex >= 0)
                 {
-                    Name = txtName.Text,
-                    Size = txtSize.Text,
-                    Material = cmbMaterial.Text,
-                    Quantity = (int)Amount.Value,
-                    MinLimit = (int)MinCount.Value,
-                    Price = price
-                };
-                Storage.Items.Add(item);
+                    // Редактирование существующего товара
+                    Storage.UpdateItem(_editIndex, newItem);
+                }
+                else
+                {
+                    // Добавление нового товара
+                    Storage.AddItem(newItem);
+                }
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-            else
+        }
+
+        private bool ValidateForm()
+        {
+            if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                // Обновление
-                editingItem.Name = txtName.Text;
-                editingItem.Size = txtSize.Text;
-                editingItem.Material = cmbMaterial.Text;
-                editingItem.Quantity = (int)Amount.Value;
-                editingItem.MinLimit = (int)MinCount.Value;
-                editingItem.Price = price;
+                MessageBox.Show("Введите название товара", "Ошибка",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
+            if (txtPrice.Text.Length <= 0)
+            {
+                MessageBox.Show("Цена должна быть больше 0", "Ошибка",
+                              MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

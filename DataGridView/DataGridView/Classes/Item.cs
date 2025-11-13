@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataGridView.Classes
+﻿namespace DataGridView.Classes
 {
     public class Item
     {
@@ -14,8 +8,20 @@ namespace DataGridView.Classes
         public int Quantity { get; set; }
         public int MinLimit { get; set; }
         public decimal Price { get; set; }
+        public decimal Total { get; set; }
 
-        // Общая сумма товара (без НДС)
-        public decimal Total => Price * Quantity;
+        // Конструктор по умолчанию для JSON сериализации
+        public Item() { }
+
+        public Item(string name, string size, string material, int quantity, int minLimit, decimal price, decimal total)
+        {
+            Name = name;
+            Size = size;
+            Material = material;
+            Quantity = quantity;
+            MinLimit = minLimit;
+            Price = price;
+            Total = total;
+        }
     }
 }
