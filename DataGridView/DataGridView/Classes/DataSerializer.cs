@@ -43,7 +43,7 @@ namespace DataGridView.Classes
                 if (!File.Exists(FilePath))
                     return new List<Item>();
 
-                string json = File.ReadAllText(FilePath);
+                var json = File.ReadAllText(FilePath);
                 var items = JsonSerializer.Deserialize<List<Item>>(json);
                 return items ?? new List<Item>();
             }

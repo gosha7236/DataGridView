@@ -18,14 +18,16 @@ namespace DataGridView
             RefreshTable();
             dataGridView1.CellDoubleClick += dgvItems_CellDoubleClick;
         }
-        ///метод для обновления таблицы
+        /// <summary>
+        /// метод для обновления таблицы
+        /// </summary>
         public void RefreshTable()
         {
             dataGridView1.Rows.Clear();
 
             foreach (var item in Storage.Items)
             {
-                int rowIdx = dataGridView1.Rows.Add(
+                var rowIdx = dataGridView1.Rows.Add(
                     item.Name, item.Size, item.Material,
                     item.Quantity, item.MinLimit, item.Price, item.Total
                 );
@@ -41,7 +43,7 @@ namespace DataGridView
             if (e.RowIndex >= 0)
             {
                 var item = Storage.Items[e.RowIndex];
-                AddForm edit = new AddForm();
+                var edit = new AddForm();
                 edit.ShowDialog();
                 RefreshTable();
             }
@@ -49,7 +51,7 @@ namespace DataGridView
 
         private void btnAdd_Click_1(object sender, EventArgs e)
         {
-            AddForm addForm = new AddForm();
+            var addForm = new AddForm();
             addForm.ShowDialog();
             RefreshTable();
         }
