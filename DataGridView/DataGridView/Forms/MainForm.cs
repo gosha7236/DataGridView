@@ -1,6 +1,6 @@
-﻿using DataGridView.Classes;
-using DataGridView.Forms;
-using System.Drawing;
+﻿using DataGridView.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace DataGridView
 {
@@ -15,27 +15,13 @@ namespace DataGridView
         public MainForm()
         {
             InitializeComponent();
-            RefreshTable();
-            dataGridView1.CellDoubleClick += dgvItems_CellDoubleClick;
+            dataGridView1.AutoGenerateColumns = false;
+            LoadData();
         }
-        /// <summary>
-        /// метод для обновления таблицы
-        /// </summary>
-        public void RefreshTable()
+        private void LoadData()
         {
-            dataGridView1.Rows.Clear();
-
-            foreach (var item in Storage.Items)
-            {
-                var rowIdx = dataGridView1.Rows.Add(
-                    item.Name, item.Size, item.Material,
-                    item.Quantity, item.MinLimit, item.Price, item.Total
-                );
-
-                // Подсветка при малом остатке
-                if (item.Quantity <= item.MinLimit)
-                    dataGridView1.Rows[rowIdx].DefaultCellStyle.BackColor = Color.LightCoral;
-            }
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = Storage.Items;
         }
 
         private void dgvItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -45,15 +31,42 @@ namespace DataGridView
                 var item = Storage.Items[e.RowIndex];
                 var edit = new AddForm();
                 edit.ShowDialog();
-                RefreshTable();
             }
         }
 
         private void btnAdd_Click_1(object sender, EventArgs e)
         {
-            var addForm = new AddForm();
-            addForm.ShowDialog();
-            RefreshTable();
+            var form = new AddForm();
+            if (form.ShowDialog() == DialogResult.OK)
+                LoadData();
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+                return;
+
+            int index = dataGridView1.SelectedRows[0].Index;
+            var item = Storage.Items[index];
+
+            var form = new AddForm(item, index);
+            if (form.ShowDialog() == DialogResult.OK)
+                LoadData();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+                return;
+
+            int index = dataGridView1.SelectedRows[0].Index;
+            Storage.RemoveItem(index);
+            LoadData();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

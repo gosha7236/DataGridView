@@ -10,53 +10,50 @@
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// хранит размер
+        /// переменная с размером
         /// </summary>
         public string Size { get; set; }
         /// <summary>
-        /// хранит материал
+        /// переменная с материалом
         /// </summary>
         public string Material { get; set; }
         /// <summary>
-        /// хранит количество
+        /// переменная с количеством
         /// </summary>
-        public int Quantity { get; set; }
+        public int Amount { get; set; }
         /// <summary>
-        /// хранит мни.кол-во
+        /// переменная с мин.количеством
         /// </summary>
-        public int MinLimit { get; set; }
+        public int minCount { get; set; }
         /// <summary>
-        /// хранит цену
+        /// переменная с ценой
         /// </summary>
         public decimal Price { get; set; }
-        /// <summary>
-        ///  хранит общую цену
-        /// </summary>
-        public decimal Total { get; set; }
 
         /// <summary>
-        /// Конструктор по умолчанию для JSON сериализации
+        /// Total теперь не хранится в файле — он вычисляется каждый раз
+        /// </summary>
+        public decimal Total => Amount * Price;
+
+        /// <summary>
+        /// конструктор по умолчанию
         /// </summary>
         public Item() { }
         /// <summary>
-        /// конструктор с параметрами
+        /// метод
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="size"></param>
-        /// <param name="material"></param>
-        /// <param name="quantity"></param>
-        /// <param name="minLimit"></param>
-        /// <param name="price"></param>
-        /// <param name="total"></param>
-        public Item(string name, string size, string material, int quantity, int minLimit, decimal price, decimal total)
+        /// <returns></returns>
+        public Item Clone()
         {
-            Name = name;
-            Size = size;
-            Material = material;
-            Quantity = quantity;
-            MinLimit = minLimit;
-            Price = price;
-            Total = total;
+            return new Item
+            {
+                Name = this.Name,
+                Size = this.Size,
+                Material = this.Material,
+                Amount = this.Amount,
+                Price = this.Price,
+                minCount = this.minCount
+            };
         }
     }
 }

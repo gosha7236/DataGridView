@@ -42,7 +42,7 @@
             label5 = new Label();
             label6 = new Label();
             label7 = new Label();
-            button1 = new Button();
+            btnSave = new Button();
             btnCancel = new Button();
             ((System.ComponentModel.ISupportInitialize)Amount).BeginInit();
             ((System.ComponentModel.ISupportInitialize)MinCount).BeginInit();
@@ -77,6 +77,7 @@
             Amount.Name = "Amount";
             Amount.Size = new Size(150, 27);
             Amount.TabIndex = 3;
+            Amount.ValueChanged += Amount_ValueChanged;
             // 
             // MinCount
             // 
@@ -91,6 +92,7 @@
             txtPrice.Name = "txtPrice";
             txtPrice.Size = new Size(125, 27);
             txtPrice.TabIndex = 5;
+            txtPrice.TextChanged += txtPrice_TextChanged;
             // 
             // txtAllPrice
             // 
@@ -169,15 +171,15 @@
             label7.TabIndex = 14;
             label7.Text = "Общая сумма товаров";
             // 
-            // button1
+            // btnSave
             // 
-            button1.Location = new Point(330, 390);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 15;
-            button1.Text = "добавить";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            btnSave.Location = new Point(330, 390);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new Size(94, 29);
+            btnSave.TabIndex = 15;
+            btnSave.Text = "добавить";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
@@ -197,7 +199,7 @@
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(800, 450);
             Controls.Add(btnCancel);
-            Controls.Add(button1);
+            Controls.Add(btnSave);
             Controls.Add(label7);
             Controls.Add(label6);
             Controls.Add(label5);
@@ -237,7 +239,7 @@
         private Label label5;
         private Label label6;
         private Label label7;
-        private Button button1;
+        private Button btnSave;
         private Button btnCancel;
     }
 }
