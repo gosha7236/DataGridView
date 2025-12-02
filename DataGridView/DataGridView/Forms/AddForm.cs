@@ -1,31 +1,22 @@
 ﻿using DataGridView.Classes;
+using System;
+using System.Windows.Forms;
 
 namespace DataGridView.Forms
 {
-    /// <summary>
-    /// форма для добавления товара
-    /// </summary>
     public partial class AddForm : Form
     {
         private readonly int _editIndex = -1;
         private readonly ErrorProvider _error = new ErrorProvider();
         private Item _item;
-        /// <summary>
-        /// конструктор для формы
-        /// </summary>
+
         public AddForm()
         {
             InitializeComponent();
             InitComboBoxes();
             _item = new Item();
         }
-        /// <summary>
-        /// конструктор формы с параметрами
-        /// </summary>
-        /// значение
-        /// <param name="item"></param>
-        /// индекс
-        /// <param name="index"></param>
+
         public AddForm(Item item, int index)
         {
             InitializeComponent();
@@ -38,7 +29,7 @@ namespace DataGridView.Forms
             txtSize.Text = _item.Size;
             cmbMaterial.Text = _item.Material;
             Amount.Value = _item.Amount;
-            MinCount.Value = _item.minCount;
+            MinCount.Value = _item.MinCount;
             txtPrice.Text = _item.Price.ToString();
             txtAllPrice.Text = _item.Total.ToString("0.00");
         }
@@ -78,9 +69,9 @@ namespace DataGridView.Forms
                 ok = false;
             }
 
-            if (int.Parse(txtPrice.Text) <= 0)
+            if (!decimal.TryParse(txtPrice.Text, out decimal price) || price <= 0)
             {
-                _error.SetError(txtPrice, "Цена должна быть больше 0!");
+                _error.SetError(txtPrice, "Цена должна быть положительным числом!");
                 ok = false;
             }
 
@@ -89,24 +80,26 @@ namespace DataGridView.Forms
 
         private void UpdateTotal()
         {
-            decimal total = Amount.Value * int.Parse(txtPrice.Text);
-            txtAllPrice.Text = total.ToString("0.00");
+            if (decimal.TryParse(txtPrice.Text, out decimal price))
+            {
+                decimal total = Amount.Value * price;
+                txtAllPrice.Text = total.ToString("0.00");
+            }
+            else
+            {
+                txtAllPrice.Text = "0.00";
+            }
         }
+
         private void AddForm_Load(object sender, EventArgs e)
         {
-            // Доступные материалы
-            cmbMaterial.Items.AddRange(new string[]
-            { "Медь", "Сталь", "Железо", "Хром" });
-
-            // Размеры
-            txtSize.Items.AddRange(new string[]
-            { "20 мм", "30 мм", "40 мм", "50 мм" });
+            cmbMaterial.Items.AddRange(new string[] { "Медь", "Сталь", "Железо", "Хром" });
+            txtSize.Items.AddRange(new string[] { "20 мм", "30 мм", "40 мм", "50 мм" });
         }
 
         private void UpdateTotal(object? sender, EventArgs e)
         {
-            if (decimal.TryParse(txtPrice.Text, out decimal price))
-                txtAllPrice.Text = (price * Amount.Value).ToString();
+            UpdateTotal();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -116,8 +109,7 @@ namespace DataGridView.Forms
         }
 
         private void Amount_ValueChanged(object sender, EventArgs e) => UpdateTotal();
-
-       private void txtPrice_TextChanged(object sender, EventArgs e) => UpdateTotal();
+        private void txtPrice_TextChanged(object sender, EventArgs e) => UpdateTotal();
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -128,20 +120,24 @@ namespace DataGridView.Forms
             _item.Size = txtSize.Text;
             _item.Material = cmbMaterial.Text;
             _item.Amount = (int)Amount.Value;
-            _item.minCount = (int)MinCount.Value;
-            _item.Price = int.Parse(txtPrice.Text);
+            _item.MinCount = (int)MinCount.Value;
+
+            if (!decimal.TryParse(txtPrice.Text, out decimal price))
+                price = 0;
+            _item.Price = price;
 
             if (_editIndex == -1)
             {
-                Storage.AddItem(_item);
+                StorageManager.AddItem(_item);
             }
             else
             {
-                Storage.UpdateItem(_editIndex, _item);
+                StorageManager.UpdateItem(_editIndex, _item);
             }
 
             DialogResult = DialogResult.OK;
             UpdateTotal();
-        }
+            this.Close();
+}
     }
-    }
+}

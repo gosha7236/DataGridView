@@ -1,36 +1,36 @@
 ﻿using DataGridView.Forms;
 using System;
 using System.Windows.Forms;
-
+using System.Linq;
 namespace DataGridView
 {
-    /// <summary>
-    /// класс основной формы
-    /// </summary>
     public partial class MainForm : Form
     {
-        /// <summary>
-        /// конструктор класса
-        /// </summary>
         public MainForm()
         {
             InitializeComponent();
+
             dataGridView1.AutoGenerateColumns = false;
+            // загрузим данные
+            StorageManager.Load();
             LoadData();
         }
+
         private void LoadData()
         {
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource = Storage.Items;
+            // привязываем к списку. Для автоматических обновлений лучше BindingList.
+            dataGridView1.DataSource = StorageManager.Items.ToList(); // ToList чтобы snapshot
         }
 
         private void dgvItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                var item = Storage.Items[e.RowIndex];
-                var edit = new AddForm();
-                edit.ShowDialog();
+                var item = StorageManager.Items[e.RowIndex];
+                var edit = new AddForm(item, e.RowIndex);
+                if (edit.ShowDialog() == DialogResult.OK)
+                    LoadData();
             }
         }
 
@@ -47,7 +47,7 @@ namespace DataGridView
                 return;
 
             int index = dataGridView1.SelectedRows[0].Index;
-            var item = Storage.Items[index];
+            var item = StorageManager.Items[index];
 
             var form = new AddForm(item, index);
             if (form.ShowDialog() == DialogResult.OK)
@@ -60,7 +60,7 @@ namespace DataGridView
                 return;
 
             int index = dataGridView1.SelectedRows[0].Index;
-            Storage.RemoveItem(index);
+            StorageManager.RemoveItem(index);
             LoadData();
         }
 
