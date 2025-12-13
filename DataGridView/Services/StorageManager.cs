@@ -1,15 +1,13 @@
 ﻿using DataGridView.Classes;
-using Services;
 using Services.Contacts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-namespace DataGridView
+namespace Services
 {
     // Статический помощник, чтобы UI мог работать так же, как раньше — Storage.Items / AddItem / RemoveItem
-    internal static class StorageManager
+    public class StorageManager
     {
         // Здесь мы держим реализацию IStorage<Item>.
         // В будущем можно инжектить другую реализацию.
@@ -20,11 +18,11 @@ namespace DataGridView
         private static List<Item> _items = new List<Item>();
 
         public static IReadOnlyList<Item> Items => _items;
-
+        
         public static async Task LoadAsync(CancellationToken cancellationToken = default)
         {
             // если вы сохраняете в файл через DataSerializer — загрузим
-            _items = DataGridView.Classes.DataSerializer.LoadItems();
+            _items = DataSerializer.LoadItems();
             // Если вы хотите загрузить из асинхронного хранилища — можете вызывать _impl.GetAllAsync(...)
             await Task.CompletedTask;
         }

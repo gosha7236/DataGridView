@@ -12,6 +12,7 @@
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>resized-9361.jpg</PackageIcon>
     <PackageId>KGServices</PackageId>
+	  <PackageTags>storage;in-memory;repository;services;datagridview;items</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,11 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="C:\Users\otlic\Downloads\resized-9361.jpg">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -37,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Entities\Entities.csproj" />
-    <ProjectReference Include="..\Services.Contacts\Services.Contacts.csproj" />
+    <ProjectReference Include="..\Services.Contacts\Services.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

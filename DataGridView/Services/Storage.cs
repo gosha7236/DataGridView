@@ -1,4 +1,5 @@
-﻿using DataGridView.Classes;
+﻿
+using DataGridView.Classes;
 using Services.Contacts;
 using System.Linq;
 namespace Services

@@ -6,8 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGridView", "DataGridView\DataGridView.csproj", "{A96ED6EB-20D6-4E26-9886-E21FA07B8D30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{C79E0070-AF7B-4CEA-A4F3-1A97ADC9CD07}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A96ED6EB-20D6-4E26-9886-E21FA07B8D30} = {A96ED6EB-20D6-4E26-9886-E21FA07B8D30}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Contacts", "Services.Contacts\Services.Contacts.csproj", "{BC9F93FE-7269-40D6-BEB1-4BDFB920496F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Contracts", "Services.Contacts\Services.Contracts.csproj", "{BC9F93FE-7269-40D6-BEB1-4BDFB920496F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{BFFF49E8-3602-45DC-80DF-2D9EDC247F3C}"
 EndProject
