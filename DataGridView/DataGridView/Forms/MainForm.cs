@@ -1,42 +1,58 @@
 ﻿using DataGridView.Forms;
+using Services;
 using System;
-using System.Windows.Forms;
 using System.Linq;
+using System.Windows.Forms;
+
 namespace DataGridView
 {
+    /// <summary>
+    /// главная форма
+    /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// пустой конструктор
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();
-
             dataGridView1.AutoGenerateColumns = false;
-            // загрузим данные
-            StorageManager.Load();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            // данные загружаем ТОЛЬКО в runtime
             LoadData();
         }
 
         private void LoadData()
         {
             dataGridView1.DataSource = null;
-            // привязываем к списку. Для автоматических обновлений лучше BindingList.
-            dataGridView1.DataSource = StorageManager.Items.ToList(); // ToList чтобы snapshot
+            dataGridView1.DataSource = StorageManager.Items.ToList();
         }
 
-        private void dgvItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                var item = StorageManager.Items[e.RowIndex];
-                var edit = new AddForm(item, e.RowIndex);
-                if (edit.ShowDialog() == DialogResult.OK)
-                    LoadData();
-            }
+            if (e.RowIndex < 0)
+                return;
+
+            var item = StorageManager.Items[e.RowIndex];
+            using var edit = new AddForm(item, e.RowIndex);
+
+            if (edit.ShowDialog() == DialogResult.OK)
+                LoadData();
+        }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+           
         }
 
         private void btnAdd_Click_1(object sender, EventArgs e)
         {
-            var form = new AddForm();
+            using var form = new AddForm();
             if (form.ShowDialog() == DialogResult.OK)
                 LoadData();
         }
@@ -49,7 +65,7 @@ namespace DataGridView
             int index = dataGridView1.SelectedRows[0].Index;
             var item = StorageManager.Items[index];
 
-            var form = new AddForm(item, index);
+            using var form = new AddForm(item, index);
             if (form.ShowDialog() == DialogResult.OK)
                 LoadData();
         }
@@ -62,11 +78,6 @@ namespace DataGridView
             int index = dataGridView1.SelectedRows[0].Index;
             StorageManager.RemoveItem(index);
             LoadData();
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
     }
 }

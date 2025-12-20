@@ -1,9 +1,12 @@
-﻿using DataGridView.Classes;
+﻿using Entities;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 namespace Services.Contracts
 {
+    /// <summary>
+    /// интерфейс для хранилища
+    /// </summary>
     public interface IStorageManager
     {
         IReadOnlyList<Item> Items { get; }

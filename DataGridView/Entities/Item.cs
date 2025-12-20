@@ -1,39 +1,58 @@
-﻿namespace DataGridView.Classes
+﻿namespace Entities
 {
     /// <summary>
-    /// класс для хранения значения
+    /// класс значения
     /// </summary>
     public class Item
     {
-        public string Name { get; set; }
-        public string Size { get; set; }
-        public string Material { get; set; }
+        /// <summary>
+        /// имя
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+       /// <summary>
+       /// размер
+       /// </summary>
+        public string Size { get; set; } = string.Empty;
+       /// <summary>
+       /// материал
+       /// </summary>
+        public string Material { get; set; } = string.Empty;
+       /// <summary>
+       /// количество
+       /// </summary>
+
         public int Amount { get; set; }
-
-        // Переименовано в PascalCase чтобы биндинг DataGridView работал.
+       /// <summary>
+       /// мин.количество
+       /// </summary>
         public int MinCount { get; set; }
-
+      /// <summary>
+      ///  цена
+      /// </summary>
         public decimal Price { get; set; }
-
-        // Вычисляемое поле (total)
+       /// <summary>
+       /// всего
+       /// </summary>
         public decimal Total => Amount * Price;
-
-        // Для биндинга столбца "AllPrice" у вас в DataGridView использовалось "AllPrice"
-        // оставим удобное свойство с тем же именем:
+       /// <summary>
+       /// общая цена
+       /// </summary>
         public decimal AllPrice => Total;
 
-        public Item() { }
-
+       /// <summary>
+       /// метод для считывания
+       /// </summary>
+       /// <returns></returns>
         public Item Clone()
         {
             return new Item
             {
-                Name = this.Name,
-                Size = this.Size,
-                Material = this.Material,
-                Amount = this.Amount,
-                Price = this.Price,
-                MinCount = this.MinCount
+                Name = Name,
+                Size = Size,
+                Material = Material,
+                Amount = Amount,
+                MinCount = MinCount,
+                Price = Price
             };
         }
     }

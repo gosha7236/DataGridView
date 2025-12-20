@@ -4,12 +4,16 @@ using System.Threading.Tasks;
 
 namespace Services.Contacts
 {
+    /// <summary>
+    /// интерфейс для Storage
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IStorage<T>
     {
         /// <summary>
         /// Получить все элементы.
         /// </summary>
-        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Добавить новый элемент.

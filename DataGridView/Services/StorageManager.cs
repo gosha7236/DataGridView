@@ -1,65 +1,88 @@
-﻿using DataGridView.Classes;
+﻿using Entities;
 using Services.Contacts;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 namespace Services
 {
-    // Статический помощник, чтобы UI мог работать так же, как раньше — Storage.Items / AddItem / RemoveItem
-    public class StorageManager
+    /// <summary>
+    /// хранилище
+    /// </summary>
+    public static class StorageManager
     {
-        // Здесь мы держим реализацию IStorage<Item>.
-        // В будущем можно инжектить другую реализацию.
-        private static readonly Storage _impl = new Storage();
+        private static IStorage<Item>? _storage;
+        private static List<Item> _items = new();
 
-        // Кешированная рабочая коллекция (просто чтобы UI мог привязаться).
-        // Если хотите, можно вернуть BindingList<Item> и привязывать DataGridView к BindingList.
-        private static List<Item> _items = new List<Item>();
-
+        /// <summary>
+        /// чтение значений
+        /// </summary>
         public static IReadOnlyList<Item> Items => _items;
-        
+        /// <summary>
+        /// инизиализация
+        /// </summary>
+        /// <param name="storage"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static void Initialize(IStorage<Item> storage)
+        {
+            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        }
+        /// <summary>
+        /// загрузка
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task LoadAsync(CancellationToken cancellationToken = default)
         {
-            // если вы сохраняете в файл через DataSerializer — загрузим
-            _items = DataSerializer.LoadItems();
-            // Если вы хотите загрузить из асинхронного хранилища — можете вызывать _impl.GetAllAsync(...)
-            await Task.CompletedTask;
+            EnsureInitialized();
+            _items = new List<Item>(await _storage!.GetAllAsync(cancellationToken));
         }
-
-        public static void Load() => LoadAsync().GetAwaiter().GetResult();
-
-        public static async Task SaveAsync(CancellationToken cancellationToken = default)
-        {
-            DataGridView.Classes.DataSerializer.SaveItems(_items);
-            await Task.CompletedTask;
-        }
-
-        public static void Save() => SaveAsync().GetAwaiter().GetResult();
-
+        /// <summary>
+        /// добавление значения
+        /// </summary>
+        /// <param name="item"></param>
         public static void AddItem(Item item)
         {
+            EnsureInitialized();
             _items.Add(item);
-            // сохранить (по желанию)
-            Save();
+            _storage!.AddAsync(item, CancellationToken.None).GetAwaiter().GetResult();
         }
-
+        /// <summary>
+        /// удаление значения
+        /// </summary>
+        /// <param name="index"></param>
         public static void RemoveItem(int index)
         {
-            if (index >= 0 && index < _items.Count)
-            {
-                _items.RemoveAt(index);
-                Save();
-            }
+            EnsureInitialized();
+            if (index < 0 || index >= _items.Count)
+                return;
+
+            var item = _items[index];
+            _items.RemoveAt(index);
+            _storage!.DeleteAsync(item, CancellationToken.None).GetAwaiter().GetResult();
+        }
+        /// <summary>
+        /// обновление значения
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="newItem"></param>
+       public static void UpdateItem(int index, Item newItem)
+        {
+            EnsureInitialized();
+            if (index < 0 || index >= _items.Count)
+                return;
+
+            var oldItem = _items[index];
+            _items[index] = newItem;
+            _storage!.UpdateAsync(oldItem, newItem, CancellationToken.None).GetAwaiter().GetResult();
         }
 
-        public static void UpdateItem(int index, Item newItem)
+        private static void EnsureInitialized()
         {
-            if (index >= 0 && index < _items.Count)
-            {
-                _items[index] = newItem;
-                Save();
-            }
+            if (_storage is null)
+                throw new InvalidOperationException(
+                    "StorageManager is not initialized. Call Initialize() first.");
         }
     }
 }

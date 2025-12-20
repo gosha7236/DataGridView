@@ -1,21 +1,32 @@
-﻿using DataGridView.Classes;
+﻿using Entities;
+using Services;
 using System;
 using System.Windows.Forms;
 
 namespace DataGridView.Forms
 {
+    /// <summary>
+    /// форма для добавления значения
+    /// </summary>
     public partial class AddForm : Form
     {
         private readonly int _editIndex = -1;
         private readonly ErrorProvider _error = new ErrorProvider();
         private Item _item;
-
+        /// <summary>
+        /// пустой конструктор
+        /// </summary>
         public AddForm()
         {
             InitializeComponent();
             InitComboBoxes();
             _item = new Item();
         }
+       /// <summary>
+       /// конструктор с параметрами
+       /// </summary>
+       /// <param name="item"></param>
+       /// <param name="index"></param>
 
         public AddForm(Item item, int index)
         {
@@ -132,7 +143,7 @@ namespace DataGridView.Forms
             }
             else
             {
-                StorageManager.UpdateItem(_editIndex, _item);
+               StorageManager.UpdateItem(_editIndex, _item);
             }
 
             DialogResult = DialogResult.OK;
