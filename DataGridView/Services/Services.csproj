@@ -30,10 +30,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+	<ItemGroup>
+	<Content Include="resized-9361.jpg">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
+	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Entities\Entities.csproj" />
-    <ProjectReference Include="..\Services.Contacts\Services.Contracts.csproj" />
+    <ProjectReference Include="..\Services.Contacts\Services.Contacts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

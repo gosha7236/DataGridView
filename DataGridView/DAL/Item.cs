@@ -6,47 +6,43 @@
     public class Item
     {
         /// <summary>
-        /// ID
-        /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
-        /// <summary>
         /// имя
         /// </summary>
         public string Name { get; set; } = string.Empty;
-        /// <summary>
-        /// размер
-        /// </summary>
+       /// <summary>
+       /// размер
+       /// </summary>
         public string Size { get; set; } = string.Empty;
-        /// <summary>
-        /// материал
-        /// </summary>
+       /// <summary>
+       /// материал
+       /// </summary>
         public string Material { get; set; } = string.Empty;
-        /// <summary>
-        /// количество
-        /// </summary>
+       /// <summary>
+       /// количество
+       /// </summary>
 
         public int Amount { get; set; }
-        /// <summary>
-        /// мин.количество
-        /// </summary>
+       /// <summary>
+       /// мин.количество
+       /// </summary>
         public int MinCount { get; set; }
-        /// <summary>
-        ///  цена
-        /// </summary>
+      /// <summary>
+      ///  цена
+      /// </summary>
         public decimal Price { get; set; }
-        /// <summary>
-        /// всего
-        /// </summary>
+       /// <summary>
+       /// всего
+       /// </summary>
         public decimal Total => Amount * Price;
-        /// <summary>
-        /// общая цена
-        /// </summary>
+       /// <summary>
+       /// общая цена
+       /// </summary>
         public decimal AllPrice => Total;
 
-        /// <summary>
-        /// метод для считывания
-        /// </summary>
-        /// <returns></returns>
+       /// <summary>
+       /// метод для считывания
+       /// </summary>
+       /// <returns></returns>
         public Item Clone()
         {
             return new Item

@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Services;
+using Services.Contracts;
 namespace DataGridView
 {
     /// <summary>
@@ -11,14 +12,7 @@ namespace DataGridView
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-
-            // Composition Root
-            StorageManager.Initialize(new Storage());
-
-            // Синхронная загрузка при старте
-            StorageManager.LoadAsync().GetAwaiter().GetResult();
-
-            Application.Run(new MainForm());
+            Application.Run(new MainForm(new StorageManager(new Storage())));
         }
     }
 }

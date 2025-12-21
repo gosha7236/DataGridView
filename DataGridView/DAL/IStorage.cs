@@ -23,11 +23,11 @@ namespace Services.Contacts
         /// <summary>
         /// Удалить элемент.
         /// </summary>
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task DeleteAsync(T item, CancellationToken cancellationToken);
 
         /// <summary>
         /// Обновить существующий элемент.
         /// </summary>
-        Task UpdateAsync(T newItem, CancellationToken cancellationToken);
+        Task UpdateAsync(T oldItem, T newItem, CancellationToken cancellationToken);
     }
 }

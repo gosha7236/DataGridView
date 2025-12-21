@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Services;
+using Services.Contracts;
 using System;
 using System.Windows.Forms;
 
@@ -10,9 +11,8 @@ namespace DataGridView.Forms
     /// </summary>
     public partial class AddForm : Form
     {
-        private readonly int _editIndex = -1;
         private readonly ErrorProvider _error = new ErrorProvider();
-        private Item _item;
+        public Item _item;
         /// <summary>
         /// пустой конструктор
         /// </summary>
@@ -22,18 +22,17 @@ namespace DataGridView.Forms
             InitComboBoxes();
             _item = new Item();
         }
-       /// <summary>
-       /// конструктор с параметрами
-       /// </summary>
-       /// <param name="item"></param>
-       /// <param name="index"></param>
+        /// <summary>
+        /// конструктор с параметрами
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="index"></param>
 
-        public AddForm(Item item, int index)
+        public AddForm(Item item)
         {
             InitializeComponent();
             InitComboBoxes();
 
-            _editIndex = index;
             _item = item.Clone();
 
             txtName.Text = _item.Name;
@@ -136,19 +135,9 @@ namespace DataGridView.Forms
             if (!decimal.TryParse(txtPrice.Text, out decimal price))
                 price = 0;
             _item.Price = price;
-
-            if (_editIndex == -1)
-            {
-                StorageManager.AddItem(_item);
-            }
-            else
-            {
-               StorageManager.UpdateItem(_editIndex, _item);
-            }
-
             DialogResult = DialogResult.OK;
             UpdateTotal();
             this.Close();
-}
+        }
     }
 }
