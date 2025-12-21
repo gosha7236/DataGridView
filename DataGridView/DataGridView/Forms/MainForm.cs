@@ -14,6 +14,8 @@ namespace DataGridView
     public partial class MainForm : Form
     {
         private IStorageManager storageManager;
+        private readonly BindingSource bindingSource = [];
+        
         /// <summary>
         /// пустой конструктор
         /// </summary>
@@ -22,6 +24,8 @@ namespace DataGridView
             InitializeComponent();
             this.storageManager = storageManager;
             dataGridView1.AutoGenerateColumns = false;
+            dataGridView1.DataSource = bindingSource;
+            LoadData();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -29,13 +33,12 @@ namespace DataGridView
             base.OnLoad(e);
 
             // данные загружаем ТОЛЬКО в runtime
-            LoadData();
         }
 
         private void LoadData()
         {
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = storageManager.GetAll();
+            var items = storageManager.GetAll();
+            bindingSource.DataSource = items.ToList();
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -60,7 +63,8 @@ namespace DataGridView
         {
             using var form = new AddForm();
             if (form.ShowDialog() == DialogResult.OK)
-                LoadData();
+                storageManager.AddItem(form._item);
+            OnUpdate();
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
@@ -72,9 +76,8 @@ namespace DataGridView
                 using var edit = new AddForm(item);
 
                 if (edit.ShowDialog() == DialogResult.OK)
-                    LoadData();
-                storageManager.UpdateItem(edit._item);
-
+                    storageManager.UpdateItem(edit._item);
+                OnUpdate();
             }
         }
         private void btnDelete_Click(object sender, EventArgs e)
@@ -85,7 +88,14 @@ namespace DataGridView
             {
                 storageManager.RemoveItem(item.Id);
             }
-            LoadData();
+            OnUpdate();
+        }
+        
+        private void OnUpdate()
+        {
+            var items = storageManager.GetAll();
+            bindingSource.DataSource = items.ToList();
+            bindingSource.ResetBindings(false);
         }
     }
 }
