@@ -50,8 +50,10 @@ namespace DataGridView
                 using var edit = new AddForm(item);
 
                 if (edit.ShowDialog() == DialogResult.OK)
+                {
+                    storageManager.UpdateItem(edit._item);
                     LoadData();
-                storageManager.UpdateItem(edit._item);
+                }
             }
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -76,8 +78,10 @@ namespace DataGridView
                 using var edit = new AddForm(item);
 
                 if (edit.ShowDialog() == DialogResult.OK)
+                {
                     storageManager.UpdateItem(edit._item);
-                OnUpdate();
+                    OnUpdate();
+                }
             }
         }
         private void btnDelete_Click(object sender, EventArgs e)

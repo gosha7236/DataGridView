@@ -33,7 +33,7 @@ namespace DataGridView.Forms
             InitializeComponent();
             InitComboBoxes();
 
-            _item = item.Clone();
+            _item = item;
 
             txtName.Text = _item.Name;
             txtSize.Text = _item.Size;
