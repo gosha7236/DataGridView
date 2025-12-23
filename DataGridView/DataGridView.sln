@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BL", "BL", "{02EA681E-C7D8-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{BDC3C238-97B9-4B75-A07C-90202C310E89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGridView.Tests", "DataGridView.Tests\DataGridView.Tests.csproj", "{3BD6FB54-CDE0-4EB1-8AA5-949237450E9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Tests", "DataGridView.Tests\Storage.Tests.csproj", "{3BD6FB54-CDE0-4EB1-8AA5-949237450E9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
