@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Authors>Georgy_Kasymbekov</Authors>
+    <Product>Nails</Product>
+    <Description>in-memory data storage implementation for DGV project</Description>
+    <Version>1.1.0</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>resized-9361.jpg</PackageIcon>
+    <PackageId>KGServices</PackageId>
+	  <PackageTags>storage;in-memory;repository;services;datagridview;items</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+	<Content Include="resized-9361.jpg">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
+	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Services.Contacts\Services.Contacts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Storage.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+</Project>
