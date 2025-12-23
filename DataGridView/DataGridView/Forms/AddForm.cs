@@ -11,6 +11,7 @@ namespace DataGridView.Forms
     /// </summary>
     public partial class AddForm : Form
     {
+        private readonly bool _isEdit;
         private readonly ErrorProvider _error = new ErrorProvider();
         public Item _item;
         /// <summary>
@@ -21,6 +22,7 @@ namespace DataGridView.Forms
             InitializeComponent();
             InitComboBoxes();
             _item = new Item();
+            _isEdit = false;
         }
         /// <summary>
         /// конструктор с параметрами
@@ -34,10 +36,9 @@ namespace DataGridView.Forms
             InitComboBoxes();
 
             _item = item;
+            _isEdit = true;
 
             txtName.Text = _item.Name;
-            txtSize.Text = _item.Size;
-            cmbMaterial.Text = _item.Material;
             Amount.Value = _item.Amount;
             MinCount.Value = _item.MinCount;
             txtPrice.Text = _item.Price.ToString();
@@ -105,6 +106,11 @@ namespace DataGridView.Forms
         {
             cmbMaterial.Items.AddRange(new string[] { "Медь", "Сталь", "Железо", "Хром" });
             txtSize.Items.AddRange(new string[] { "20 мм", "30 мм", "40 мм", "50 мм" });
+            if (_isEdit)
+            {
+                cmbMaterial.SelectedItem = _item.Material;
+                txtSize.SelectedItem = _item.Size;
+            }
         }
 
         private void UpdateTotal(object? sender, EventArgs e)

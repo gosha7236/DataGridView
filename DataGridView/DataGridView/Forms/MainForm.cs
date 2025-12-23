@@ -15,7 +15,7 @@ namespace DataGridView
     {
         private IStorageManager storageManager;
         private readonly BindingSource bindingSource = [];
-        
+
         /// <summary>
         /// пустой конструктор
         /// </summary>
@@ -39,6 +39,7 @@ namespace DataGridView
         {
             var items = storageManager.GetAll();
             bindingSource.DataSource = items.ToList();
+            UpdateStatus();
         }
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -58,7 +59,7 @@ namespace DataGridView
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-           
+
         }
 
         private void btnAdd_Click_1(object sender, EventArgs e)
@@ -94,12 +95,31 @@ namespace DataGridView
             }
             OnUpdate();
         }
-        
+
         private void OnUpdate()
         {
             var items = storageManager.GetAll();
             bindingSource.DataSource = items.ToList();
             bindingSource.ResetBindings(false);
+            UpdateStatus();
+        }
+        private void UpdateStatus()
+        {
+            var items = storageManager.GetAll().ToList();
+
+            int positionsCount = items.Count;
+            int totalAmount = items.Sum(i => i.Amount);
+            decimal totalWithoutVat = items.Sum(i => i.Total);
+            decimal totalWithVat = totalWithoutVat * 1.20m;
+
+            lblItemsCount.Text = $"Позиций: {positionsCount}, Всего шт: {totalAmount}";
+            lblTotalWithoutVat.Text = $"Без НДС: {totalWithoutVat:0.00} ₽";
+            lblTotalWithVat.Text = $"С НДС (20%): {totalWithVat:0.00} ₽";
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
