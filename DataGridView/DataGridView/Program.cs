@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
 using Services;
-using Services.Contacts;
-using Services.Contracts;
 using Log = Serilog.Log;
 
 namespace DataGridView
@@ -37,7 +35,7 @@ namespace DataGridView
             var storage = new Storage();
             var storageManager = new StorageManager(storage, logger);
 
-            Application.Run(new MainForm(storageManager));
+            Application.Run(new MainForm(new EFStorageManager()));
         }
     }
 }
