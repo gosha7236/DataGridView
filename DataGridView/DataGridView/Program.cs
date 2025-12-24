@@ -1,19 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
 using Services;
+using Services.Contacts;
+using Services.Contracts;
 using Log = Serilog.Log;
 
 namespace DataGridView
 {
     /// <summary>
-    /// программный класс
+    /// Точка входа приложения
     /// </summary>
     public class Program
     {
         [STAThread]
         static void Main()
         {
-            // 🔹 1. Инициализация Serilog
+            // 1️⃣ Настройка Serilog (логирование в файл)
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.File(
@@ -21,7 +23,7 @@ namespace DataGridView
                     rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
-            // 🔹 2. Подключение Serilog к Microsoft ILogger
+            // 2️⃣ Подключение Serilog к Microsoft.Extensions.Logging
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog();
@@ -29,7 +31,7 @@ namespace DataGridView
 
             var logger = loggerFactory.CreateLogger<StorageManager>();
 
-            // 🔹 3. Обычный запуск WinForms
+            // 3️⃣ Запуск приложения
             ApplicationConfiguration.Initialize();
 
             var storage = new Storage();
