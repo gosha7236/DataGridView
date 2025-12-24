@@ -1,53 +1,79 @@
 ﻿using Entities;
+using Microsoft.Extensions.Logging;
 using Services.Contacts;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Services
 {
     /// <summary>
-    /// хранилище
+    /// Класс управления доступом к хранилищу
     /// </summary>
     public class StorageManager : IStorageManager
     {
-        private IStorage<Item>? storage;
-        public StorageManager(IStorage<Item> storage) 
+        private readonly IStorage<Item> storage;
+        private readonly ILogger<StorageManager> logger;
+
+        public StorageManager(IStorage<Item> storage, ILogger<StorageManager> logger)
         {
             this.storage = storage;
+            this.logger = logger;
         }
-        /// <summary>
-        /// добавление значения
-        /// </summary>
-        /// <param name="item"></param>
-        public  void AddItem(Item item)
+        public StorageManager(IStorage<Item> storage)
         {
-            storage!.AddAsync(item, CancellationToken.None).GetAwaiter().GetResult();
+            this.storage = storage;
+            this.logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<StorageManager>.Instance;
         }
 
+        /// <summary>
+        /// Добавление элемента в хранилище
+        /// </summary>
+        public void AddItem(Item item)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            storage.AddAsync(item, CancellationToken.None).GetAwaiter().GetResult();
+            stopwatch.Stop();
+            logger.LogInformation("Method {MethodName} executed in {ElapsedMilliseconds} ms",nameof(AddItem),stopwatch.ElapsedMilliseconds);
+        }
+
+        /// <summary>
+        /// Получение всех элементов
+        /// </summary>
         public IReadOnlyCollection<Item> GetAll()
         {
-            return storage.GetAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+            var stopwatch = Stopwatch.StartNew();
+
+            var result = storage.GetAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+            stopwatch.Stop();
+            logger.LogInformation("Method {MethodName} executed in {ElapsedMilliseconds} ms",nameof(GetAll),stopwatch.ElapsedMilliseconds);
+            return result;
         }
 
         /// <summary>
-        /// удаление значения
+        /// Удаление элемента по идентификатору
         /// </summary>
-        /// <param name="index"></param>
         public void RemoveItem(Guid id)
         {
-            storage!.DeleteAsync(id, CancellationToken.None).GetAwaiter().GetResult();
+            var stopwatch = Stopwatch.StartNew();
+
+            storage.DeleteAsync(id, CancellationToken.None).GetAwaiter().GetResult();
+            stopwatch.Stop();
+            logger.LogInformation("Method {MethodName} executed in {ElapsedMilliseconds} ms", nameof(RemoveItem),stopwatch.ElapsedMilliseconds);
         }
+
         /// <summary>
-        /// обновление значения
+        /// Обновление элемента
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="newItem"></param>
-        public void UpdateItem( Item newItem)
-        { 
-            storage!.UpdateAsync( newItem, CancellationToken.None).GetAwaiter().GetResult();
+        public void UpdateItem(Item newItem)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            storage.UpdateAsync(newItem, CancellationToken.None).GetAwaiter().GetResult();
+            stopwatch.Stop();
+            logger.LogInformation( "Method {MethodName} executed in {ElapsedMilliseconds} ms",nameof(UpdateItem),stopwatch.ElapsedMilliseconds);
         }
     }
 }
