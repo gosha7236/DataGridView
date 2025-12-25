@@ -9,9 +9,9 @@ namespace Services.Contracts
     /// </summary>
     public interface IStorageManager
     {
-        void AddItem(Item item);
-        void RemoveItem(Guid id);
-        void UpdateItem( Item newItem);
-        IReadOnlyCollection<Item> GetAll();
+        Task<IReadOnlyList<Item>> GetAllAsync(CancellationToken ct = default);
+        Task AddItemAsync(Item item, CancellationToken ct = default);
+        Task UpdateItemAsync(Item item, CancellationToken ct = default);
+        Task RemoveItemAsync(Guid id, CancellationToken ct = default);
     }
 }

@@ -1,41 +1,46 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DataBase;
+using Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Services;
-using Log = Serilog.Log;
+using Services.Contacts;
+using Services.Contracts;
+using System;
+using System.Windows.Forms;
 
 namespace DataGridView
 {
-    /// <summary>
-    /// Точка входа приложения
-    /// </summary>
-    public class Program
+    internal static class Program
     {
         [STAThread]
         static void Main()
         {
-            // 1️⃣ Настройка Serilog (логирование в файл)
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.File(
-                    path: "logs/performance.log",
-                    rollingInterval: RollingInterval.Day)
-                .CreateLogger();
+          
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Information()
+                    .WriteTo.File(
+                        path: "logs/performance.log",
+                        rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+                var services = new ServiceCollection();
 
-            // 2️⃣ Подключение Serilog к Microsoft.Extensions.Logging
-            using var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.AddSerilog();
-            });
-
-            var logger = loggerFactory.CreateLogger<StorageManager>();
-
-            // 3️⃣ Запуск приложения
-            ApplicationConfiguration.Initialize();
-
-            var storage = new Storage();
-            var storageManager = new StorageManager(storage, logger);
-
-            Application.Run(new MainForm(new EFStorageManager()));
+                services.AddLogging(builder =>
+                {
+                    builder.ClearProviders();
+                    builder.AddSerilog();
+                });
+                services.AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(
+                        @"Server=(localdb)\MSSQLLocalDB;Database=ItemsDb;Trusted_Connection=True;"));
+                services.AddScoped<IStorage<Item>, DbStorage>();
+                services.AddScoped<IStorageManager, StorageManager>();
+                services.AddScoped<MainForm>();
+                var provider = services.BuildServiceProvider();
+                ApplicationConfiguration.Initialize();
+                var mainForm = provider.GetRequiredService<MainForm>();
+                Application.Run(mainForm);
+            }
         }
     }
-}

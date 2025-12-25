@@ -4,15 +4,11 @@ using Services.Contacts;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Services
 {
-    /// <summary>
-    /// Класс управления действиями бизнес-логики.
-    /// Выполняет логирование производительности методов.
-    /// </summary>
     public class StorageManager : IStorageManager
     {
         private readonly IStorage<Item> storage;
@@ -24,83 +20,61 @@ namespace Services
             this.logger = logger;
         }
 
-        /// <summary>
-        /// Добавление элемента в хранилище.
-        /// В лог записывается имя метода и время выполнения в миллисекундах.
-        /// </summary>
-        public void AddItem(Item item)
+        public async Task AddItemAsync(Item item, CancellationToken cancellationToken = default)
         {
-            var stopwatch = Stopwatch.StartNew();
+            using var _ = logger.BeginScope("Adding item with ID: {ItemId}", item.Id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            storage.AddAsync(item, CancellationToken.None)
-                   .GetAwaiter()
-                   .GetResult();
+            await storage.AddAsync(item, cancellationToken).ConfigureAwait(false);
 
-            stopwatch.Stop();
-
+            sw.Stop();
             logger.LogInformation(
-                "Method {MethodName} executed in {ElapsedMilliseconds} ms",
-                nameof(AddItem),
-                stopwatch.ElapsedMilliseconds);
+                "Method {Method} executed in {Time} ms",
+                nameof(AddItemAsync),
+                sw.ElapsedMilliseconds);
         }
 
-        /// <summary>
-        /// Получение всех элементов.
-        /// </summary>
-        public IReadOnlyCollection<Item> GetAll()
+        public async Task<IReadOnlyList<Item>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            var result = storage.GetAllAsync(CancellationToken.None)
-                                .GetAwaiter()
-                                .GetResult();
+            var result = await storage.GetAllAsync(cancellationToken).ConfigureAwait(false);
 
-            stopwatch.Stop();
-
+            sw.Stop();
             logger.LogInformation(
-                "Method {MethodName} executed in {ElapsedMilliseconds} ms",
-                nameof(GetAll),
-                stopwatch.ElapsedMilliseconds);
+                "Method {Method} executed in {Time} ms",
+                nameof(GetAllAsync),
+                sw.ElapsedMilliseconds);
 
             return result;
         }
 
-        /// <summary>
-        /// Удаление элемента.
-        /// </summary>
-        public void RemoveItem(Guid id)
+        public async Task RemoveItemAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var stopwatch = Stopwatch.StartNew();
+            using var _ = logger.BeginScope("Removing item with ID: {ItemId}", id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            storage.DeleteAsync(id, CancellationToken.None)
-                   .GetAwaiter()
-                   .GetResult();
+            await storage.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
 
-            stopwatch.Stop();
-
+            sw.Stop();
             logger.LogInformation(
-                "Method {MethodName} executed in {ElapsedMilliseconds} ms",
-                nameof(RemoveItem),
-                stopwatch.ElapsedMilliseconds);
+                "Method {Method} executed in {Time} ms",
+                nameof(RemoveItemAsync),
+                sw.ElapsedMilliseconds);
         }
 
-        /// <summary>
-        /// Обновление элемента.
-        /// </summary>
-        public void UpdateItem(Item newItem)
+        public async Task UpdateItemAsync(Item item, CancellationToken cancellationToken = default)
         {
-            var stopwatch = Stopwatch.StartNew();
+            using var _ = logger.BeginScope("Updating item with ID: {ItemId}", item.Id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            storage.UpdateAsync(newItem, CancellationToken.None)
-                   .GetAwaiter()
-                   .GetResult();
+            await storage.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
 
-            stopwatch.Stop();
-
+            sw.Stop();
             logger.LogInformation(
-                "Method {MethodName} executed in {ElapsedMilliseconds} ms",
-                nameof(UpdateItem),
-                stopwatch.ElapsedMilliseconds);
+                "Method {Method} executed in {Time} ms",
+                nameof(UpdateItemAsync),
+                sw.ElapsedMilliseconds);
         }
     }
 }

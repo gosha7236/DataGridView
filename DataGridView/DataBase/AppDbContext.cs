@@ -9,10 +9,8 @@ namespace DataBase
     {
         public DbSet<Item> Items => Set<Item>();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\MSSQLLocalDB;Database=ItemsDb;Trusted_Connection=True;");
+      public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        { 
         }
     }
 }
