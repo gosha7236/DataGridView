@@ -7,7 +7,7 @@
     <Authors>Georgy_Kasymbekov</Authors>
     <Product>Nails</Product>
     <Description>in-memory data storage implementation for DGV project</Description>
-    <Version>1.1.0</Version>
+    <Version>2.1.0</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>resized-9361.jpg</PackageIcon>
@@ -37,7 +37,12 @@
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
 	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1" />
+	</ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DataBase\DataBase.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
     <ProjectReference Include="..\Services.Contacts\Services.Contacts.csproj" />
   </ItemGroup>
 

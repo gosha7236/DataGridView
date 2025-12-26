@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.Extensions.Logging;
 using Services.Contacts;
 using Services.Contracts;
 using System;
@@ -8,46 +9,72 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    /// <summary>
-    /// хранилище
-    /// </summary>
     public class StorageManager : IStorageManager
     {
-        private IStorage<Item>? storage;
-        public StorageManager(IStorage<Item> storage) 
+        private readonly IStorage<Item> storage;
+        private readonly ILogger<StorageManager> logger;
+
+        public StorageManager(IStorage<Item> storage, ILogger<StorageManager> logger)
         {
             this.storage = storage;
-        }
-        /// <summary>
-        /// добавление значения
-        /// </summary>
-        /// <param name="item"></param>
-        public  void AddItem(Item item)
-        {
-            storage!.AddAsync(item, CancellationToken.None).GetAwaiter().GetResult();
+            this.logger = logger;
         }
 
-        public IReadOnlyCollection<Item> GetAll()
+        public async Task AddItemAsync(Item item, CancellationToken cancellationToken = default)
         {
-            return storage.GetAllAsync(CancellationToken.None).GetAwaiter().GetResult();
+            using var _ = logger.BeginScope("Adding item with ID: {ItemId}", item.Id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            await storage.AddAsync(item, cancellationToken).ConfigureAwait(false);
+
+            sw.Stop();
+            logger.LogInformation(
+                "Method {Method} executed in {Time} ms",
+                nameof(AddItemAsync),
+                sw.ElapsedMilliseconds);
         }
 
-        /// <summary>
-        /// удаление значения
-        /// </summary>
-        /// <param name="index"></param>
-        public void RemoveItem(Guid id)
+        public async Task<IReadOnlyList<Item>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            storage!.DeleteAsync(id, CancellationToken.None).GetAwaiter().GetResult();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            var result = await storage.GetAllAsync(cancellationToken).ConfigureAwait(false);
+
+            sw.Stop();
+            logger.LogInformation(
+                "Method {Method} executed in {Time} ms",
+                nameof(GetAllAsync),
+                sw.ElapsedMilliseconds);
+
+            return result;
         }
-        /// <summary>
-        /// обновление значения
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="newItem"></param>
-        public void UpdateItem( Item newItem)
-        { 
-            storage!.UpdateAsync( newItem, CancellationToken.None).GetAwaiter().GetResult();
+
+        public async Task RemoveItemAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            using var _ = logger.BeginScope("Removing item with ID: {ItemId}", id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            await storage.DeleteAsync(id, cancellationToken).ConfigureAwait(false);
+
+            sw.Stop();
+            logger.LogInformation(
+                "Method {Method} executed in {Time} ms",
+                nameof(RemoveItemAsync),
+                sw.ElapsedMilliseconds);
+        }
+
+        public async Task UpdateItemAsync(Item item, CancellationToken cancellationToken = default)
+        {
+            using var _ = logger.BeginScope("Updating item with ID: {ItemId}", item.Id);
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            await storage.UpdateAsync(item, cancellationToken).ConfigureAwait(false);
+
+            sw.Stop();
+            logger.LogInformation(
+                "Method {Method} executed in {Time} ms",
+                nameof(UpdateItemAsync),
+                sw.ElapsedMilliseconds);
         }
     }
 }

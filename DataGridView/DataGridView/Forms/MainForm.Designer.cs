@@ -162,7 +162,7 @@ namespace DataGridView
             btnAdd.TabIndex = 2;
             btnAdd.Text = "Добавить";
             btnAdd.UseVisualStyleBackColor = true;
-            btnAdd.Click += btnAdd_Click_1;
+            btnAdd.Click += btnAdd_Click;
             // 
             // label1
             // 

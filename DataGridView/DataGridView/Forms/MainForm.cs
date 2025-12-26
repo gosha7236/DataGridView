@@ -1,112 +1,65 @@
 ﻿using DataGridView.Forms;
 using Entities;
-using Services;
 using Services.Contracts;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DataGridView
 {
     /// <summary>
-    /// главная форма
+    /// Главная форма
     /// </summary>
     public partial class MainForm : Form
     {
-        private IStorageManager storageManager;
-        private readonly BindingSource bindingSource = [];
+        private readonly IStorageManager storageManager;
+        private readonly BindingSource bindingSource = new();
 
-        /// <summary>
-        /// пустой конструктор
-        /// </summary>
         public MainForm(IStorageManager storageManager)
         {
             InitializeComponent();
             this.storageManager = storageManager;
+
+            // Настройка DataGridView
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.DataSource = bindingSource;
-            LoadData();
+
+            // Подписка на события
+            Shown += MainForm_Shown;
         }
 
-        protected override void OnLoad(EventArgs e)
+        private async void MainForm_Shown(object? sender, EventArgs e)
         {
-            base.OnLoad(e);
-
-            // данные загружаем ТОЛЬКО в runtime
+            await LoadDataAsync();
         }
 
-        private void LoadData()
+        private async Task LoadDataAsync()
         {
-            var items = storageManager.GetAll();
-            bindingSource.DataSource = items.ToList();
-            UpdateStatus();
-        }
-
-        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-                return;
-            if (dataGridView1.Rows[e.RowIndex].DataBoundItem is Item item)
+            UseWaitCursor = true;
+            try
             {
-                using var edit = new AddForm(item);
-
-                if (edit.ShowDialog() == DialogResult.OK)
-                {
-                    storageManager.UpdateItem(edit._item);
-                    LoadData();
-                }
+                var items = await storageManager.GetAllAsync();
+                // Оборачиваем в BindingList для поддержки уведомлений (опционально, но удобно)
+                bindingSource.DataSource = new BindingList<Item>(items.ToList());
+                UpdateStatus(items);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                UseWaitCursor = false;
             }
         }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
 
-        }
-
-        private void btnAdd_Click_1(object sender, EventArgs e)
+        // Обновление статуса (без перезагрузки данных)
+        private void UpdateStatus(IReadOnlyCollection<Item> items)
         {
-            using var form = new AddForm();
-            if (form.ShowDialog() == DialogResult.OK)
-                storageManager.AddItem(form._item);
-            OnUpdate();
-        }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.SelectedRows.Count == 0)
-                return;
-            if (dataGridView1.SelectedRows[0].DataBoundItem is Item item)
-            {
-                using var edit = new AddForm(item);
-
-                if (edit.ShowDialog() == DialogResult.OK)
-                {
-                    storageManager.UpdateItem(edit._item);
-                    OnUpdate();
-                }
-            }
-        }
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.SelectedRows.Count == 0)
-                return;
-            if (dataGridView1.SelectedRows[0].DataBoundItem is Item item)
-            {
-                storageManager.RemoveItem(item.Id);
-            }
-            OnUpdate();
-        }
-
-        private void OnUpdate()
-        {
-            var items = storageManager.GetAll();
-            bindingSource.DataSource = items.ToList();
-            bindingSource.ResetBindings(false);
-            UpdateStatus();
-        }
-        private void UpdateStatus()
-        {
-            var items = storageManager.GetAll().ToList();
-
             int positionsCount = items.Count;
             int totalAmount = items.Sum(i => i.Amount);
             decimal totalWithoutVat = items.Sum(i => i.Total);
@@ -117,9 +70,68 @@ namespace DataGridView
             lblTotalWithVat.Text = $"С НДС (20%): {totalWithVat:0.00} ₽";
         }
 
-        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private async void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
 
+            if (dataGridView1.Rows[e.RowIndex].DataBoundItem is Item item)
+            {
+                using var editForm = new AddForm(item);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    await storageManager.UpdateItemAsync(editForm._item);
+                    await LoadDataAsync(); // или обновить локально через BindingList
+                }
+            }
         }
+
+        private async void btnAdd_Click(object sender, EventArgs e)
+        {
+            using var form = new AddForm();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                await storageManager.AddItemAsync(form._item);
+                await LoadDataAsync();
+            }
+        }
+
+        private async void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0) return;
+
+            if (dataGridView1.SelectedRows[0].DataBoundItem is Item item)
+            {
+                using var editForm = new AddForm(item);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    await storageManager.UpdateItemAsync(editForm._item);
+                    await LoadDataAsync();
+                }
+            }
+        }
+
+        private async void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0) return;
+
+            if (dataGridView1.SelectedRows[0].DataBoundItem is Item item)
+            {
+                var result = MessageBox.Show(
+                    "Вы уверены, что хотите удалить эту запись?",
+                    "Подтверждение удаления",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    await storageManager.RemoveItemAsync(item.Id);
+                    await LoadDataAsync();
+                }
+            }
+        }
+
+        // Следующие обработчики оставлены пустыми (можно удалить, если не используются)
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
     }
 }
