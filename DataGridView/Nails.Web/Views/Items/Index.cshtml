@@ -1,0 +1,83 @@
+﻿@using Entities
+@model IReadOnlyList<Item>
+
+@{
+    ViewData["Title"] = "Список товаров";
+
+    decimal totalWithoutVat = Model.Sum(x => x.Total);
+    decimal vatRate = 0.20m;
+    decimal vatAmount = totalWithoutVat * vatRate;
+    decimal totalWithVat = totalWithoutVat + vatAmount;
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="mb-3">
+        <a asp-action="Create" class="btn btn-success">Добавить товар</a>
+        <a asp-action="Index" class="btn btn-primary">Обновить</a>
+    </div>
+
+    <!-- 📊 Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="alert alert-info">
+                <strong>Всего позиций:</strong><br />
+                @Model.Count
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="alert alert-warning">
+                <strong>Общая сумма (без НДС):</strong><br />
+                @totalWithoutVat.ToString("N2") ₽
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="alert alert-success">
+                <strong>Общая сумма (с НДС 20%):</strong><br />
+                @totalWithVat.ToString("N2") ₽
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Название</th>
+                <th>Размер</th>
+                <th>Материал</th>
+                <th>Кол-во</th>
+                <th>Мин.</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="@(item.Amount < item.MinCount ? "table-danger" : "")">
+                    <td>@item.Name</td>
+                    <td>@item.Size</td>
+                    <td>@item.Material</td>
+                    <td>@item.Amount</td>
+                    <td>@item.MinCount</td>
+                    <td>@item.Price</td>
+                    <td>@item.Total</td>
+                    <td>
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-sm btn-warning">✏</a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Удалить товар?');">🗑</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
