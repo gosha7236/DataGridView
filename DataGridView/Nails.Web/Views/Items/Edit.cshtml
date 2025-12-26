@@ -1,0 +1,65 @@
+﻿@using Entities
+@model Item
+
+@{
+    ViewData["Title"] = "Редактировать товар";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <!-- Размер -->
+        <div class="mb-3">
+            <label asp-for="Size"></label>
+            <select asp-for="Size" class="form-select">
+                <option value="">-- Выберите размер --</option>
+                <option>20мм</option>
+                <option>30мм</option>
+                <option>40мм</option>
+                <option>50мм</option>
+            </select>
+        </div>
+
+        <!-- Материал -->
+        <div class="mb-3">
+            <label asp-for="Material"></label>
+            <select asp-for="Material" class="form-select">
+                <option value="">-- Выберите материал --</option>
+                <option>Медь</option>
+                <option>Сталь</option>
+                <option>Железо</option>
+                <option>Хром</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Amount"></label>
+            <input asp-for="Amount" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MinCount"></label>
+            <input asp-for="MinCount" type="number" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" type="number" step="0.01" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Сохранить</button>
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

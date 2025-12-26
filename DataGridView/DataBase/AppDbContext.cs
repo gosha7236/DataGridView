@@ -9,8 +9,8 @@ namespace DataBase
     {
         public DbSet<Item> Items => Set<Item>();
 
-      public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
-        { 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
         }
     }
 }

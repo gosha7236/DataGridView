@@ -18,23 +18,27 @@ namespace Entities
         /// имя
         /// </summary>
         [Required]
+        [StringLength(100)]
         public string Name { get; set; } = string.Empty;
         /// <summary>
         /// размер
         /// </summary>
+        [Required]
         public string Size { get; set; } = string.Empty;
         /// <summary>
         /// материал
         /// </summary>
+        [Required]
         public string Material { get; set; } = string.Empty;
         /// <summary>
         /// количество
         /// </summary>
-
+        [Range(0,100)]
         public int Amount { get; set; }
         /// <summary>
         /// мин.количество
         /// </summary>
+        [Range(0,100)]
         public int MinCount { get; set; }
         /// <summary>
         ///  цена
